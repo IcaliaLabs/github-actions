@@ -19,3 +19,13 @@ action "assert-artanis-changed" {
   args = "example-1/app"
 }
 ```
+
+By default, the result of the action when the directory didn't change will be
+neutral. If you need the action to fail, add 'FAIL' to the arguments:
+
+```
+action "assert-artanis-changed" {
+  uses = "icalialabs/github-actions/assert-directory-changed@master"
+  args = "example-1/app FAIL"
+}
+```
