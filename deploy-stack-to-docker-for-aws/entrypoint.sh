@@ -8,7 +8,8 @@ DEPLOY_OPTIONS=""
 write_pkey_to_file() {
   echo ${DOCKER_FOR_AWS_SSH_KEY} > /tmp/ssh-key.pem
   chmod 0600 /tmp/ssh-key.pem
-  echo "- Wrote SSH private key"
+  echo "- Wrote SSH private key:"
+  echo ${DOCKER_FOR_AWS_SSH_KEY}
 }
 
 create_tunnel_to_manager() {
@@ -50,4 +51,6 @@ set_prune_option() {
 
 connect_to_swarm
 set_deploy_options
-exec "docker stack deploy ${DEPLOY_OPTIONS} ${STACK_NAME}"
+echo "DOCKER_HOST=${DOCKER_HOST}"
+echo "DOCKER = `which docker`"
+docker stack deploy ${DEPLOY_OPTIONS} ${STACK_NAME}
