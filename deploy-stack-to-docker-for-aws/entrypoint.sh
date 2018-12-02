@@ -12,6 +12,11 @@ write_pkey_to_file() {
   echo ${DOCKER_FOR_AWS_SSH_KEY}
 }
 
+test_ssh_connection() {
+  echo "- Testing the SSH Connection: Listing swarm nodes..."
+  ssh -i /tmp/ssh-key.pem "docker@${SWARM_MANAGER_PUBLIC_DNS}" docker node ls
+}
+
 create_tunnel_to_manager() {
   ssh -i /tmp/ssh-key.pem -NL localhost:2374:/var/run/docker.sock "docker@${SWARM_MANAGER_PUBLIC_DNS}" &
   echo "- Opened tunnel to Swarm manager's Docker socket at '${SWARM_MANAGER_PUBLIC_DNS}' to 'localhost:2374'"
@@ -25,6 +30,7 @@ set_docker_host_to_manager() {
 connect_to_swarm() {
   echo "Connecting to Swarm:"
   write_pkey_to_file
+  test_ssh_connection
   create_tunnel_to_manager
   set_docker_host_to_manager
 }
