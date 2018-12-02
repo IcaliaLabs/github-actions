@@ -5,49 +5,49 @@
 
 DEPLOY_OPTIONS=""
 
-write-pkey-to-file() {
+write_pkey_to_file() {
   echo ${DOCKER_FOR_AWS_SSH_KEY} > /tmp/ssh-key.pem
   chmod 0600 /tmp/ssh-key.pem
   echo "- Wrote SSH private key"
 }
 
-create-tunnel-to-manager() {
+create_tunnel_to_manager() {
   ssh -i /tmp/ssh-key.pem -NL localhost:2374:/var/run/docker.sock "docker@${SWARM_MANAGER_PUBLIC_DNS}" &
   echo "- Opened tunnel to Swarm manager's Docker socket at '${SWARM_MANAGER_PUBLIC_DNS}' to 'localhost:2374'"
 }
 
-set-docker-host-to-manager() {
+set_docker_host_to_manager() {
   export DOCKER_HOST="localhost:2374"
   echo "- Set 'DOCKER_HOST' env var to 'localhost:2374'"
 }
 
-connect-to-swarm() {
+connect_to_swarm() {
   echo "Connecting to Swarm:"
-  write-pkey-to-file
-  create-tunnel-to-manager
-  set-docker-host-to-manager
+  write_pkey_to_file
+  create_tunnel_to_manager
+  set_docker_host_to_manager
 }
 
-set-deploy-options() {
-  set-with-registry-auth-option
-  set-compose-file-option
-  set-prune-option
+set_deploy_options() {
+  set_with_registry_auth_option
+  set_compose_file_option
+  set_prune_option
 }
 
-set-with-registry-auth-option() {
+set_with_registry_auth_option() {
   if [ "${DEPLOY_IMAGES_REQUIRE_AUTH}" = 'yes' ]; then
     DEPLOY_OPTIONS="${DEPLOY_OPTIONS} --with-registry-auth"
   fi
 }
 
-set-compose-file-option() {
+set_compose_file_option() {
   DEPLOY_OPTIONS="${DEPLOY_OPTIONS} --compose-file ${STACK_FILE}"
 }
 
-set-prune-option() {
+set_prune_option() {
   DEPLOY_OPTIONS="${DEPLOY_OPTIONS} --prune"
 }
 
-connect-to-swarm
-set-deploy-options
+connect_to_swarm
+set_deploy_options
 exec "docker stack deploy ${DEPLOY_OPTIONS} ${STACK_NAME}"
