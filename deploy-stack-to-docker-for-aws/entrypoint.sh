@@ -55,5 +55,5 @@ set_prune_option() {
 
 connect_to_swarm
 set_deploy_options
-echo "Running: 'docker stack deploy ${DEPLOY_OPTIONS} ${STACK_NAME}'"
-docker stack deploy ${DEPLOY_OPTIONS} ${STACK_NAME}
+echo "Running: 'docker -H localhost:2374 stack deploy ${DEPLOY_OPTIONS} ${STACK_NAME}'"
+docker -H localhost:2374 stack deploy ${DEPLOY_OPTIONS} ${STACK_NAME}
