@@ -47,3 +47,47 @@ action "Deploy to Docker Swarm" {
   args = [ "stack-name", "path-to/docker-compose-stack.yml" ]
 }
 ```
+
+## Heroku
+
+Similar to [actions/heroku](https://github.com/actions/heroku), it wraps the
+Heroku CLI to enable common Heroku commands. However, you can also use an env
+variable named `HEROKU_WORKDIR` to run the `heroku` command in a custom
+directory.
+
+### Example
+
+```HCL
+workflow "Deploy to Heroku" {
+  on = "push"
+  resolves = "release"
+}
+
+action "Login to Heroku Registry" {
+  uses = "icalialabs/github-actions/heroku@master"
+  args = "container:login"
+  secrets = [ "HEROKU_API_KEY" ]
+}
+
+action "Push App Image" {
+  uses = "icalialabs/github-actions/heroku@master"
+  needs = [ "Login to Heroku Registry" ]
+  env = {
+    HEROKU_APP = "calm-fortress-1234"
+    HEROKU_WORKDIR = "your-app-directory"
+  }
+  args = "container:push web"
+  secrets = ["HEROKU_API_KEY"]
+}
+
+action "Release App" {
+  uses = "actions/heroku@master"
+  needs = [ "Push App Image" ]
+  env = {
+    HEROKU_APP = "calm-fortress-1234"
+    HEROKU_WORKDIR = "your-app-directory" # Optional
+  }
+  args = "container:release web"
+  secrets = [ "HEROKU_API_KEY" ]
+}
+```
