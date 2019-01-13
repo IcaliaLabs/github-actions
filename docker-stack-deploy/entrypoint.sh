@@ -10,6 +10,12 @@ DOCKER_OPTIONS=""
 DEPLOY_OPTIONS=""
 
 write_pkey_to_file() {
+  if [ -z "${DOCKER_STACK_DEPLOY_SSH_KEY}" ]
+  then
+    echo "Error: Looks like the SSH key is empty!"
+    exit 1
+  fi
+
   echo "- Writing SSH private key..."
   echo "${DOCKER_STACK_DEPLOY_SSH_KEY}" > /tmp/ssh-key.pem
   chmod 0600 /tmp/ssh-key.pem
