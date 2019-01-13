@@ -107,6 +107,6 @@ then
   exit 1
 fi
 
-if [ "${DOCKER_TAG_LATEST}" = "true" ]; then tag_latest; fi
-if [ "${DOCKER_TAG_REF}" = "true" ]; then tag_ref; fi
 if [ "${DOCKER_TAG_SHA}" = "true" ]; then tag_sha; fi
+if [ "${DOCKER_TAG_REF}" = "true" ]; then tag_ref; fi
+if [ "${DOCKER_TAG_LATEST}" = "true" ]; then tag_latest; fi
