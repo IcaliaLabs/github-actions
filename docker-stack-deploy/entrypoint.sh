@@ -14,8 +14,6 @@ write_pkey_to_file() {
   then
     echo "Error: Looks like the SSH key is empty!"
     exit 1
-  else
-    echo "SSH_KEY: ${DOCKER_STACK_DEPLOY_SSH_KEY}"
   fi
 
   echo "- Writing SSH private key..."
