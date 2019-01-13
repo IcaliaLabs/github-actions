@@ -32,7 +32,7 @@ function tag_latest()
 
 function tag_ref()
 {
-  tag=$(echo -n "${DOCKER_TAG_REF_VALUE}" | sed -r 's/^refs\/heads\///')
+  tag=$(echo -n "${DOCKER_TAG_REF_VALUE}" | sed -r 's/^refs\/heads\///' | sed -r 's/\//-/')
   docker tag ${DOCKER_TAG_SOURCE_IMAGE} ${DOCKER_TAG_TARGET_IMAGE}:${tag} \
   && echo "Tagged ${DOCKER_TAG_SOURCE_IMAGE} as ${DOCKER_TAG_TARGET_IMAGE}:${tag}" \
   || exit 1
