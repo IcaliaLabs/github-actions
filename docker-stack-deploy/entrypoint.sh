@@ -14,6 +14,8 @@ write_pkey_to_file() {
   then
     echo "Error: Looks like the SSH key is empty!"
     exit 1
+  else
+    echo "SSH_KEY: ${DOCKER_STACK_DEPLOY_SSH_KEY}"
   fi
 
   echo "- Writing SSH private key..."
@@ -29,7 +31,6 @@ create_tunnel_to_manager() {
 }
 
 test_docker_swarm_connection() {
-  ls -lah /var/run/
   echo "- Getting remote swarm info..."
   docker ${DOCKER_OPTIONS} info
 }

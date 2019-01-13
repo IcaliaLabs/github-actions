@@ -2,9 +2,9 @@ FROM docker:stable
 
 RUN apk add --no-cache openssh-client
 
-COPY entrypoint.sh /usr/src/entrypoint.sh
+COPY entrypoint.sh /usr/local/sbin/docker-stack-deploy
 
-ENTRYPOINT ["/usr/src/entrypoint.sh"]
+ENTRYPOINT [ "/usr/local/sbin/docker-stack-deploy" ]
 
 LABEL "repository"="https://github.com/IcaliaLabs/github-actions.git" \
       "homepage"="https://github.com/IcaliaLabs/github-actions" \
