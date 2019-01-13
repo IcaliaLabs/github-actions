@@ -29,8 +29,8 @@ create_tunnel_to_manager() {
 }
 
 test_docker_swarm_connection() {
-  echo "- Getting remote swarm info..."
-  docker ${DOCKER_OPTIONS} info
+  echo "- Testing connection to swarm manager..."
+  docker ${DOCKER_OPTIONS} info > /dev/null
 }
 
 connect_to_swarm() {
