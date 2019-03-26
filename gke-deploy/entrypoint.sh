@@ -8,35 +8,35 @@ GCLOUD_ZONE=${GCLOUD_ZONE:-$PLUGIN_ZONE}
 GCLOUD_PROJECT=${GCLOUD_PROJECT:-$PLUGIN_PROJECT}
 GCLOUD_CLUSTER=${GCLOUD_CLUSTER:-$PLUGIN_CLUSTER}
 DEPLOY_IMAGE=${DEPLOY_IMAGE:-$PLUGIN_DEPLOY_IMAGE}
-
+JSON_KEY=${JSON_KEY:-$PLUGIN_JSON_KEY}
 
 write_key_to_file() {
-  if [ -z "${DOCKER_STACK_DEPLOY_SSH_KEY}" ]
+  if [ -z "${JSON_KEY}" ]
   then
-    echo "Error: Looks like the SSH key is empty!"
+    echo "Error: Looks like the json key is empty!"
     exit 1
   fi
 
-  echo "- Writing SSH private key..."
-  echo "${DOCKER_STACK_DEPLOY_SSH_KEY}" > /tmp/ssh-key.pem
-  chmod 0600 /tmp/ssh-key.pem
+  echo "- Writing json key..."
+  echo "${JSON_KEY}" > /tmp/json_key.json
 }
 
-printenv
+activate_gcloud_service_account() {
+  write_key_to_file
+  gcloud auth activate-service-account --key-file /tmp/json_key.json
+}
 
-echo "============= GCLOUD_CLUSTER: ${GCLOUD_CLUSTER} ============="
-echo "============= GCLOUD_ZONE: ${GCLOUD_ZONE} ============="
-echo "============= GCLOUD_PROJECT: ${GCLOUD_PROJECT} ============="
-echo "============= Deploy image: ${DEPLOY_IMAGE} ============="
+configure_kubectl() {
+  gcloud container clusters get-credentials $GCLOUD_CLUSTER \
+    --zone $GCLOUD_ZONE \
+    --project $GCLOUD_PROJECT
+}
 
-pwd
-ls -lah /drone
-
-# # Step 1:
-# gcloud auth activate-service-account --key-file tmp/production-232221-dc4143c1322a.json
+# Step 1:
+activate_gcloud_service_account
 
 # # Step 2:
-# gcloud container clusters get-credentials staging-cluster --zone us-central1-a --project production-232221
+configure_kubectl
 
 # # Step 3:
-# kubectl apply -f ...
+kubectl get pods
