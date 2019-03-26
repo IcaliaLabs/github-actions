@@ -1,0 +1,5 @@
+.drone.yml
+
+.*_hist*
+
+Dockerfile
