@@ -1,4 +1,5 @@
 .drone.yml
+sample-deploy.yml
 
 .*_hist*
 
