@@ -10,7 +10,8 @@ GCLOUD_PROJECT=${GCLOUD_PROJECT:-$PLUGIN_PROJECT}
 GCLOUD_CLUSTER=${GCLOUD_CLUSTER:-$PLUGIN_CLUSTER}
 DEPLOY_TEMPLATE=${DEPLOY_TEMPLATE:-$PLUGIN_DEPLOY_TEMPLATE}
 
-DEPLOY_IMAGE_TAG=${COMMIT_SHA:-$DRONE_COMMIT_SHA}
+COMMIT_SHA=${COMMIT_SHA:-$DRONE_COMMIT_SHA}
+DEPLOYMENT_NAME=${DEPLOYMENT_NAME:-$PLUGIN_DEPLOYMENT_NAME}
 
 write_key_to_file() {
   if [ -z "${JSON_KEY}" ]
@@ -35,7 +36,7 @@ configure_kubectl() {
 }
 
 evaluate_template() {
-  if [ -z "${DEPLOY_IMAGE_TAG}" ]; then DEPLOY_IMAGE_TAG=latest; fi
+  if [ -z "${COMMIT_SHA}" ]; then COMMIT_SHA=latest; fi
 
   if [ ! -f "${DEPLOY_TEMPLATE}" ]
   then
@@ -43,13 +44,13 @@ evaluate_template() {
     exit 1
   fi
 
-  sed "s+{{image-tag}}+${DEPLOY_IMAGE_TAG}+g" $DEPLOY_TEMPLATE > /tmp/deploy.yml
+  sed "s+{{commit-sha}}+${COMMIT_SHA}+g" $DEPLOY_TEMPLATE > /tmp/deploy.yml
 }
 
 apply_and_wait_for_rollout() {
   evaluate_template
   kubectl apply -f /tmp/deploy.yml
-  kubectl rollout status deployment/${GCLOUD_PROJECT}
+  kubectl rollout status deployment/${DEPLOYMENT_NAME}
 }
 
 # Step 1:
