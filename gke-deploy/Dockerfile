@@ -1,5 +1,6 @@
 # Based on:
 # - https://www.jeffgeerling.com/blog/2018/install-kubectl-your-docker-image-easy-way
+# - https://medium.com/@admm/ci-cd-using-circleci-and-google-kubernetes-engine-gke-7ed3a5ad57e
 # - https://github.com/nytimes/drone-gke
 
 # Read more on:
