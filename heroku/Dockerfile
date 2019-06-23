@@ -1,6 +1,6 @@
 FROM node:dubnium-alpine
 
-RUN yarn global add heroku
+RUN npm install -g heroku
 
 COPY entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
