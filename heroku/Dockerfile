@@ -1,12 +1,12 @@
-FROM node:10.14-alpine
-
-COPY --from=docker:stable /usr/local/bin/* /usr/local/bin/
+FROM node:dubnium-alpine
 
 RUN yarn global add heroku
 
 COPY entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT [ "/usr/local/bin/docker-entrypoint.sh" ]
+
+COPY --from=docker:stable /usr/local/bin/* /usr/local/bin/
 
 LABEL "version"="0.0.1" \
       "repository"="http://github.com/IcaliaLabs/github-actions" \
