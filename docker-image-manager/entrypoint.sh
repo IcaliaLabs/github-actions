@@ -30,7 +30,7 @@ function tag_and_push()
   SERVICE_NAME=$1
   IMAGE_NAME=$2
   SOURCE_IMAGE=$(docker-compose --file ${COMPOSE_FILE} config | yq -t r - services.${SERVICE_NAME}.image)
-  SOURCE_IMAGE_TAG=$(echo ${SOURCE_IMAGE} | sed -E "s/([[:alpha:]]+):([[:alpha:]]+)/\2/")
+  SOURCE_IMAGE_TAG=$(echo ${SOURCE_IMAGE} | sed -E "s/^(.+):(.+)$/\2/")
   
   # 1: Tag with the branch name:
   if [ "${SOURCE_IMAGE_TAG}" == "latest" ]
