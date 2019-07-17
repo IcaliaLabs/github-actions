@@ -9,10 +9,26 @@ function download_cache()
 {
   SERVICE_NAME=$1
 
+  echo "$@" | grep -qe '--break-on-first' && BREAK_ON_FIRST="yes" || BREAK_ON_FIRST="no"
+
+  if [ "${BREAK_ON_FIRST}" == 'no' ]
+  then
+    echo "DEPRECATION WARNING: The behavior of download-cache will change in newer versions, stopping on the first pulled image."
+    echo "Ensure your'e using the '--break-on-first' option to switch to the new behavior!"
+  fi
+
   for image_name in $(TAG_SAFE_BRANCH=${TAG_SAFE_BRANCH} docker-compose --file ${COMPOSE_FILE} config | yq -t r - services.${SERVICE_NAME}.build.cache_from)
   do
     if [ "${image_name}" == "-" ]; then continue; fi
-    docker pull ${image_name} || echo "cache miss"
+    docker pull ${image_name}
+
+    pull_status=$?
+
+    if [ $pull_status -ne 0 ]; then echo "cache miss"; fi
+
+    # If pull was successful, and the "break on first" flag is set, break off
+    # the loop:
+    if [ $pull_status -eq 0 ] && [ "${BREAK_ON_FIRST}" == 'yes' ]; then break; fi
   done
 }
 
@@ -69,14 +85,14 @@ function tag_and_push()
 
 
 case $GIVEN_COMMAND in
-	download-cache)
-		download_cache $2
-		;;
+  download-cache)
+    download_cache $2 $3
+    ;;
   tag-and-push)
     tag_and_push $2 $3 $4
     ;;
-	*)
-		echo "Sorry, I don't understand"
+  *)
+    echo "Sorry, I don't understand"
     exit 1
-		;;
+    ;;
 esac
