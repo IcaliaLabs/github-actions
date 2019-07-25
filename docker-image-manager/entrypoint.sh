@@ -20,6 +20,7 @@ function download_cache()
   for image_name in $(TAG_SAFE_BRANCH=${TAG_SAFE_BRANCH} docker-compose --file ${COMPOSE_FILE} config | yq -t r - services.${SERVICE_NAME}.build.cache_from)
   do
     if [ "${image_name}" == "-" ]; then continue; fi
+    echo "Attempt to pull image '${image_name}':"
     docker pull ${image_name}
 
     pull_status=$?
